@@ -37,13 +37,23 @@ simple assembler code:
 
 ```nasm
 ; Infinite loop (e9 fd ff)
-loop:
-    jmp loop 
+loop:                   ; Define a label , " loop ", that will allow
+                        ; us to jump back to it , forever.
+        
+    jmp loop            ; Use a simple CPU instruction that jumps
+                        ; to a new memory address to continue execution.
+                        ; In our case , jump to the address of the current
+                        ; instruction.
 
-; Fill with 510 zeros minus the size of the previous code
-times 510-($-$$) db 0
-; Magic number
-dw 0xaa55 
+times 510-($-$$) db 0  ;When compiled , our program must fit into 512 bytes ,
+                       ; with the last two bytes being the magic number ,
+                       ; so here , tell our assembly compiler to pad out our
+                       ; program with enough zero bytes (db 0) to bring us to the
+                       ; 510 th byte.
+
+dw 0xaa55              ; Last two bytes ( one word ) form the magic number ,
+                       ; so BIOS knows we are a boot sector.
+
 ```
 
 To compile:
@@ -56,8 +66,9 @@ I know you're anxious to try it out (I am!), so let's do it:
 `qemu boot_sect_simple.bin`
 
 > On some systems, you may have to run `qemu-system-x86_64 boot_sect_simple.bin` If this gives an SDL error, try passing the --nographic and/or --curses flag(s).
+
 > On windows you need to add the `.exe` after selecting the qemu type. For eg. for windows, you may have to run `qemu-system-x86_64.exe boot_sect_simple.bin` from the directory where qemu is stored.      
 
-You will see a window open which says "Booting from Hard Disk..." and
+You will see a window open which says **" Booting from Hard Disk... "** and
 nothing else. When was the last time you were so excited to see an infinite
 loop? ;-)
